@@ -7,6 +7,7 @@ from .forms import EmailPostForm, CommentForm
 
 from taggit.models import Tag
 
+from django.db.models import Count
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -80,12 +81,36 @@ def post_detail(request, year, month, day, post):
     else:
         comment_form = CommentForm()
 
+                                  # МЕТОДЫ values
 
+    # values возвращает объект QuerySet, где каждый объект модели представлен в виде словаря
+    # post = Post.objects.values()
+    # Также можно передать в метод values поля, которые должны быть в словаре (по умолчанию выбираются все поля модели)
+    # post = Post.objects.values('id', 'name')
+    # Метод values_list во многом аналогичен values(): он возвращает объект QuerySet, который состоит из кортежей.
+    # Каждый кортеж хранит данные одного объекта модели. (список)
+    # post = Post.objects.values_list()
+    # post = Post.objects.values_list('id', 'name')
+    # Если выбирается только одно поле, то в итоге получится набор кортежей, в каждом из которых будет по одному
+    # значению. Но передав параметру flat значение True можно упростить набор, вынеся значения на уровень выше:
+    # post_tags_ids = post.tags.values_list('id', flat=True)
+    # Результат Queryset<[1, 2, 3, ...]>
+
+    # Формирование списка похожих статей
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    # получаем все статьи, содержащие хоть один тег из полученных ранее, исключая текущую статью
+    similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
+    # используем функцию агрегации Count для формирования вычисляемого поля same_tags, которое содержит
+    # определенное количество совпадающих тегов.
+    # сортирует список опубликованных статей в убывающем порядке по количеству совпадающих тегов для отображения
+    # первыми максимально похожих статей и делает срез результата для отображения только четырех статей
+    similar_posts = similar_posts.annotate(same_tag=Count('tags')).order_by('-same_tag', '-publish')[:4]
 
     return render(request, 'blog/post/detail.html', {'post': post,
                                                      'comments': comments,
                                                      'new_comment': new_comment,
-                                                     'comment_form': comment_form})
+                                                     'comment_form': comment_form,
+                                                     'similar_posts': similar_posts})
 
 
 def post_share(request, post_id):
