@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+{% block tile %}Share a post{% endblock %}
+{% block content %}
+
+<!-- Это шаблон для отображения формы или информации об успешной отправке сообщения.
+ Как вы могли заметить, мы создали HTML-элемент формы, который будет отправляться на сервер методом POST:-->
+  {% if sent %}
+    <h1>E-mail successfully sent</h1>
+    <p>"{{ post.tile }}" was successfully sent to {{ form.cleaned_data.to }}</p>
+  {% else %}
+    <h1>Share "{{ post.title }}" by e-mail</h1>
+<!--Атрибут action
+Этот атрибут определяет, куда отправляются данные. Его значение должно быть действительным URL. Если этот атрибут
+ не указан, данные будут отправлены на URL-адрес страницы, содержащей форму.-->
+    <form action="." method="post">
+      {% csrf_token %}}
+<!--      {{ form.as_p form.as_ul form.as_table  -->
+      {% for field in form %}
+        <div>
+          {{ field.errors }}
+          {{ field.label_tag }} {{ field }}
+        </div>
+{% endfor %}
+
+      <input type="submit" value="Send e-mail">
+    </form>
+  {% endif %}
+{% endblock %}

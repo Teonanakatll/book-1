@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'blog.apps.BlogConfig',
+    # pip install django-taggit
+    'taggit',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +125,33 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Emails settings
+# Разрешить доступ к почтовому ящику с помощью почтовых клиентов
+# С сервера imap.yandex.ru по протоколу IMAP
+# Способ авторизации по IMAP
+# Пароли приложений и OAuth-токены
+
+# Создать пароль приложения EMAIL_HOST_PASSWORD = ...
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'bfaroon@yandex.ru'
+EMAIL_HOST_PASSWORD = 'bmapekwfxpyblwek'
+# EMAIL_PASSWORD = '123qweQ.'
+
+# Емейл отправителя, будет подставляться в поле атправителя
+FROM_EMAIL = "bfaroon@yandex.ru"
+# Емуйл администратора, для отправки администратору
+EMAIL_ADMIN = "bfaroon@yandex.ru"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Для вывода имейлов в консоль
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Сервис временной электронной почты
+# https://temp-mail.org/ru/
+

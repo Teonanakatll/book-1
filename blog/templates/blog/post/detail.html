@@ -2,6 +2,48 @@
 {% block title %} {{ post.title }} {% endblock %}
 {% block content %}
   <h1>{{ post.title }}</h1>
+
+  <!--  Выводим теги старей. Шаблонный фильтр join работает так же, как Python-функция join(): соеди-
+      няет элементы в строку, указывая в промежутках заданную строку.-->
+  <p class="tags">Tags: {{ post.tags.all|join:", "}}</p>
   <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
   {{ post.body|linebreaks }}
+
+  <p>
+    <a href="{% url 'blog:post_share' post.id %}">Share this post</a>
+  </p>
+
+<!--Мы используем ORM Django в шаблоне, выполняя comments.count(). Обратите
+внимание, что для вызова функций в шаблонах не нужно указывать круглые
+скобки. Тег {% with .. позволяет назначить переменной новое имя, которое
+можно использовать внутри блока до ближайшего тега {% endwith ..-->
+  {% with comments.count as total_comments %}
+    <h2>{{ total_comments}} comment{{ total_comments|pluralize }}</h2>
+  {% endwith %}
+
+  {% for comment in comments %}
+    <div class="comments">
+      <p class="info">
+<!--        Каждый комментарий пронумерован с помощью переменной {{ forloop.counter }},
+            которая содержит номер текущей итерации цикла.-->
+        Comment {{ forloop.counter }} by {{ comment.name }}
+        {{ comment.created }}
+      </p>
+        {{ comment.body|linebreaks }}
+  {% empty %}
+      <p>There are no comments yet.</p>
+  {% endfor %}
+
+  {% if new_comment %}
+      <h2>Your comment has been added.</h2>
+  {% else %}
+      <h2>Add a new comment</h2>
+      <form action="." method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <p><input type="submit" value="Add comment"></p>
+      </form>
+  {% endif %}
+    </div>
+
 {% endblock %}
