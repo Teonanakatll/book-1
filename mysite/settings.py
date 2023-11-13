@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     # pip install django-taggit
     'taggit',
+
+    # Карта сайта
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [
