@@ -8,6 +8,7 @@ app_name = 'blog'
 urlpatterns = [
     # path('', views.PostListView.as_view(), name='post_list'),
     path('', views.post_list, name='post_list'),
+    path('search/', views.post_search, name='post_search'),
 
     # url - для фильтрации статей по тегу
     # Мы используем преобразователь slug, для того чтобы ограничить воз-можные символы URL’а в качестве тега

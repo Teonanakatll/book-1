@@ -4,7 +4,7 @@
 
 {% block title %}My blog{% endblock %}
 {% block content %}
-  <h1>My blog</h1>
+  <h1>My blog <a href="{% url 'blog:post_search' %}">Search posts</a></h1>
 
 <!--Если статья показана по тегу-->
   {% if tag %}
